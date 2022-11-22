@@ -1,13 +1,25 @@
 use std::io;
 
 fn main() {
-    println!("Hello... Who are you?");
+    let mut inputs = vec![];
+    'test: loop {
+        println!("Please enter a value:");
 
-    let mut name = String::new();
-    io::stdin()
-        .read_line(&mut name)
-        .expect("Failed to read line");
-    name = name.trim_end().to_string();
+        let mut input = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read line");
+        input = input.trim().to_string();
 
-    println!("Hello, {}!", name);
+        if input == "quit" {
+            break 'test;
+        }
+
+        inputs.push(input.trim_end().to_string());
+
+        println!("You entered those {} inputs:", inputs.len());
+        println!("{}", inputs.join(", "));
+    }
+
+    println!("Good Bye!");
 }
