@@ -1,25 +1,31 @@
-use std::io;
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
+
+enum TestEnum {
+    A,
+    B,
+    C,
+}
+
+impl Distribution<TestEnum> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> TestEnum {
+        match rng.gen_range(0..=2) {
+            0 => TestEnum::A,
+            1 => TestEnum::B,
+            2 => TestEnum::C,
+            _ => unreachable!(),
+        }
+    }
+}
 
 fn main() {
-    let mut inputs = vec![];
-    'test: loop {
-        println!("Please enter a value:");
-
-        let mut input = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Failed to read line");
-        input = input.trim().to_string();
-
-        if input == "quit" {
-            break 'test;
-        }
-
-        inputs.push(input.trim_end().to_string());
-
-        println!("You entered those {} inputs:", inputs.len());
-        println!("{}", inputs.join(", "));
+    for _i in 0..=2 {
+        match rand::random::<TestEnum>() {
+            TestEnum::A => println!("A"),
+            TestEnum::B => println!("B"),
+            TestEnum::C => println!("C"),
+        };
     }
-
-    println!("Good Bye!");
 }
