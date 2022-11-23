@@ -3,6 +3,16 @@ use rand::{
     Rng,
 };
 
+fn main() {
+    for _i in 0..=2 {
+        match rand::random::<TestEnum>() {
+            TestEnum::A => println!("A"),
+            TestEnum::B => println!("B"),
+            TestEnum::C => println!("C"),
+        };
+    }
+}
+
 enum TestEnum {
     A,
     B,
@@ -17,15 +27,5 @@ impl Distribution<TestEnum> for Standard {
             2 => TestEnum::C,
             _ => unreachable!(),
         }
-    }
-}
-
-fn main() {
-    for _i in 0..=2 {
-        match rand::random::<TestEnum>() {
-            TestEnum::A => println!("A"),
-            TestEnum::B => println!("B"),
-            TestEnum::C => println!("C"),
-        };
     }
 }
