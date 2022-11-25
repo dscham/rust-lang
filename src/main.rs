@@ -1,13 +1,14 @@
-use std::io;
+mod util;
+mod server;
+mod client;
+
 
 fn main() {
-    println!("Hello... Who are you?");
+    println!("Start client or server? (c/s)");
 
-    let mut name = String::new();
-    io::stdin()
-        .read_line(&mut name)
-        .expect("Failed to read line");
-    name = name.trim_end().to_string();
-
-    println!("Hello, {}!", name);
+    match util::read_cli_string().as_str() {
+        "server" | "s" => server::start_server(),
+        "client" | "c" => client::start_client(),
+        _ => println!("Invalid input"),
+    }
 }
