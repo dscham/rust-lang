@@ -1,14 +1,11 @@
 mod util;
 mod server;
 mod client;
+mod p2p;
 
 
 fn main() {
-    println!("Start client or server? (c/s)");
+    println!("Starting up...");
 
-    match util::read_cli_string().as_str() {
-        "server" | "s" => server::start_server(),
-        "client" | "c" => client::start_client(),
-        _ => println!("Invalid input"),
-    }
+    p2p::run_heartbeat();
 }

@@ -1,5 +1,7 @@
 use std::io::{Read, Write};
-use std::net::TcpStream;
+use std::net::{SocketAddr, TcpStream};
+use std::thread;
+
 use crate::util;
 
 pub fn start_client() {
@@ -14,6 +16,10 @@ pub fn start_client() {
     let socket_addr = util::create_socket(host.as_str(), port);
     println!("SocketAddr created");
 
+    thread::spawn(move || client_main(&socket_addr));
+}
+
+fn client_main(socket_addr: &SocketAddr) {
     let mut tcp_stream = TcpStream::connect(socket_addr).unwrap();
     println!("Client started with socket address: {}!", tcp_stream.peer_addr().unwrap());
 
@@ -23,6 +29,7 @@ pub fn start_client() {
         if message == "q" {
             break 'client;
         }
+
         tcp_stream.write(message.as_bytes()).unwrap();
 
         'response: loop {
