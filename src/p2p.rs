@@ -1,5 +1,7 @@
 use std::{thread, time};
-use std::net::{SocketAddr, UdpSocket};
+use std::net::{Ipv4Addr, SocketAddr, UdpSocket};
+use std::str::FromStr;
+use crate::util;
 
 pub struct Peer {
     addr: SocketAddr
@@ -8,9 +10,17 @@ pub struct Peer {
 pub fn run_heartbeat() {
     println!("Setting up heartbeat...");
 
-    let socket = UdpSocket::bind("0.0.0.0:42690").expect("Could not bind UDP socket");
+    let socket = UdpSocket::bind("0.0.0.0:42069").expect("Could not bind UDP socket");
+    socket.join_multicast_v4(&Ipv4Addr::from_str("224.0.0.1").unwrap(), &Ipv4Addr::UNSPECIFIED).expect("Could not join multicast group");
+    socket.set_multicast_loop_v4(false).unwrap();
     let socket_copy = socket.try_clone().unwrap();
     let mut threads = vec![];
+
+    /*match util::read_cli_u16() {
+        1 => threads.push(thread::spawn(move || heartbeat_sender(socket))),
+        _ => threads.push(thread::spawn(move || heartbeat_receiver(socket_copy)))
+    }*/
+
     threads.push(thread::spawn(move || heartbeat_sender(socket)));
     threads.push(thread::spawn(move || heartbeat_receiver(socket_copy)));
 
@@ -22,8 +32,8 @@ pub fn run_heartbeat() {
 fn heartbeat_sender(socket: UdpSocket) {
     loop {
         println!("tik");
-        socket.send_to("HELLO".as_bytes(), "225.225.225.225:42069").expect("Failed to send data");
-        thread::sleep(time::Duration::from_secs(1));
+        socket.send_to("HELLO".as_bytes(), "224.0.0.1:42069").expect("Failed to send data");
+        thread::sleep(time::Duration::from_secs(10));
         println!("tok");
     }
 }
